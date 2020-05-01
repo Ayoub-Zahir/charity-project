@@ -1,0 +1,204 @@
+<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    <div class="uk-width-1-1">
+        <app-navbar></app-navbar>
+    </div>
+
+    <div class="uk-width-1-5 uk-visible@l">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="uk-width-expand" style="min-height: calc(100vh - 70px);">
+
+        <div class="uk-container" style="width: 80%;">
+
+            <!-- User Profile  -->
+            <div class="uk-section">
+                <h2>User Profile</h2>
+
+                <form (ngSubmit)="onEditUser(editUserform)" #editUserform="ngForm" class="uk-form-stacked uk-card uk-card-default uk-padding border-radius-20">
+                    <!-- Loading fetching users...  -->
+                    <div class="uk-text-center" [hidden]="!loading">
+                        <div uk-spinner="ratio:1.5"></div>
+                    </div>
+
+                    <fieldset *ngIf="!loading && currentUser" class="uk-fieldset">
+
+                        <!-- Picture URL field  -->
+                        <div class="uk-margin">
+                            <div class="uk-form-controls uk-grid-small" uk-grid>
+                                <!-- Picture  -->
+                                <div class="uk-width-1-6" style="width: fit-content;">
+                                    <img src="{{currentUser.imgURL===null ? currentUser.defaultImg : currentUser.imgURL}}" alt="{{currentUser.fullName}}_Img" class="uk-border-circle" width="80" height="80">
+                                </div>
+
+                                <!-- Input  -->
+                                <div class="uk-width-expand uk-flex uk-flex-middle">
+                                    <div class="uk-width-expand">
+                                        <label class="uk-form-label uk-text-bold" for="form-stacked-text ">Picture
+                                            URL</label>
+                                        <input class="uk-input border-radius-10" [class.uk-form-danger]="imgURL.invalid && imgURL.touched" type="text" placeholder="https://photo.png" name="imgURL" #imgURL="ngModel" [ngModel]="currentUser.imgURL" pattern="(http|ftp|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?">
+
+                                        <!-- Validation errors -->
+                                        <div *ngIf="imgURL.errors && imgURL.touched">
+                                            <p [hidden]="!imgURL.errors?.invalidImgURL && !imgURL.errors?.pattern" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Invalid picture URL.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Name field  -->
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-bold" for="form-stacked-text">Name</label>
+
+                            <div class="uk-form-controls">
+                                <input class="uk-input border-radius-10" [class.uk-form-danger]="fullName.invalid && fullName.touched" type="text" placeholder="Full name" name="fullName" [(ngModel)]="currentUser.fullName" #fullName="ngModel" required minlength="3">
+                            </div>
+
+                            <!-- Validation errors -->
+                            <div *ngIf="fullName.errors && fullName.touched">
+                                <p [hidden]="!fullName.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">User Name is required.</p>
+                                <p [hidden]="!fullName.errors?.minlength" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be at least 3 caracters.</p>
+                            </div>
+                        </div>
+
+                        <!-- Email field  -->
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-bold" for="form-stacked-text">Email</label>
+
+                            <div class="uk-form-controls">
+                                <input class="uk-input border-radius-10" [class.uk-form-danger]="email.invalid && email.touched" type="text" placeholder="example@gmail.com" name="email" [(ngModel)]="currentUser.email" #email="ngModel" required pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?">
+                            </div>
+
+                            <!-- Validation errors -->
+                            <div *ngIf="email.errors && email.touched">
+                                <p [hidden]="!email.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Email is required.</p>
+                                <p [hidden]="!email.errors?.pattern" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Email is not valid.</p>
+                                <p [hidden]="!email.errors?.emailExist" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">The email address is already in use by another user.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Role field  -->
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-bold" for="form-stacked-text">Role</label>
+
+                            <div class="uk-form-controls">
+                                <select class="uk-select border-radius-10" [class.uk-form-danger]="userRole.invalid && userRole.touched" [(ngModel)]="currentUser.role" name="role" #userRole="ngModel" required>
+                                    <option value="" disabled selected>Select user role</option>
+                                    <option>User</option>
+                                    <option>Admin</option>
+                                </select>
+                            </div>
+
+                            <!-- Validation errors -->
+                            <div *ngIf="userRole.errors && userRole.touched">
+                                <p [hidden]="!userRole.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">User role is required.</p>
+                            </div>
+                        </div>
+
+                        <!-- Disabled field  -->
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-bold" for="form-stacked-text ">Account Setting</label>
+
+                            <div class="disable-field uk-text-left" uk-grid style="margin: auto;">
+                                <div class="uk-width-2-3 uk-flex uk-flex-middle" style="padding-left: 0px;">
+                                    <span>Disable Account</span>
+                                </div>
+
+                                <div class="uk-width-1-3 uk-text-right">
+                                    <label class="switch">
+                                        <input type="checkbox" name="disabled" [(ngModel)]="currentUser.disabled">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phone field  -->
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-bold" for="form-stacked-text">Phone</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input border-radius-10" [class.uk-form-danger]="phone.invalid && phone.touched" type="text" placeholder="+971 XX YYZ YYYY" name="phone" [(ngModel)]="currentUser.phone" #phone="ngModel">
+                            </div>
+
+                            <!-- Validation errors -->
+                            <div *ngIf="phone.errors && phone.touched">
+                                <p [hidden]="!phone.errors?.invalidPhoneNumber" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Invalid phone number format.</p>
+                            </div>
+                        </div>
+
+                        <!-- Submit  -->
+                        <div *ngIf="updateProcessLoading" class="uk-margin">
+                            <button class="uk-button uk-button-warning uk-width-1-1 uk-text-bold uk-border-pill" type="submit" uk-spinner="ratio: 0.9"></button>
+                        </div>
+                        <div *ngIf="!updateProcessLoading" class="uk-margin">
+                            <button [disabled]="!editUserform.dirty" class="uk-button uk-button-warning uk-width-1-1 uk-text-bold uk-border-pill" type="submit">save user profile</button>
+                        </div>
+
+                    </fieldset>
+                </form>
+
+            </div>
+
+            <!-- Reset Password  -->
+            <div class="uk-section">
+                <h2>Reset User Password</h2>
+
+                <form (ngSubmit)="onResetPassword(resetPasswordform)" #resetPasswordform="ngForm" class="uk-form-stacked uk-card uk-card-default uk-padding border-radius-20">
+                    <!-- Loading fetching users...  -->
+                    <div class="uk-text-center" [hidden]="!loading">
+                        <div uk-spinner="ratio:1.5"></div>
+                    </div>
+
+                    <fieldset *ngIf="!loading && currentUser" class="uk-fieldset">
+
+                        <!-- New Password field  -->
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-bold" for="form-stacked-text">New Password</label>
+
+                            <div class="uk-form-controls">
+                                <input class="uk-input border-radius-10" [class.uk-form-danger]="newPassword.invalid && newPassword.touched" type="password" placeholder="******" name="newPassword" [(ngModel)]="resetPassword.newPassword" #newPassword="ngModel" minlength="6">
+                            </div>
+
+                            <!-- Validation errors -->
+                            <div *ngIf="newPassword.errors && newPassword.touched">
+                                <p [hidden]="!newPassword.errors?.minlength" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be more at least 6 caracters.</p>
+                            </div>
+                        </div>
+
+                        <!-- Confirm new password field  -->
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-bold" for="form-stacked-text">Confirm Password</label>
+
+                            <div class="uk-form-controls">
+                                <input class="uk-input border-radius-10" [class.uk-form-danger]="resetPassword.confirmNewPassword != resetPassword.newPassword && confirmNewPassword.touched" type="password" placeholder="******" name="confirmPassword" [(ngModel)]="resetPassword.confirmNewPassword"
+                                    #confirmNewPassword="ngModel">
+                            </div>
+
+                            <!-- Validation errors -->
+                            <p [hidden]="resetPassword.confirmNewPassword == resetPassword.newPassword || !confirmNewPassword.touched" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be the same as the password.
+                            </p>
+
+                        </div>
+
+                        <!-- Submit  -->
+                        <div *ngIf="resetPasswordLoading" class="uk-margin">
+                            <button class="uk-button uk-button-warning uk-width-1-1 uk-text-bold uk-border-pill" type="submit" uk-spinner="ratio: 0.9"></button>
+                        </div>
+                        <div *ngIf="!resetPasswordLoading" class="uk-margin">
+                            <button [disabled]="!resetPasswordform.dirty" class="uk-button uk-button-warning uk-width-1-1 uk-text-bold uk-border-pill" type="submit">reset password</button>
+                        </div>
+
+                    </fieldset>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

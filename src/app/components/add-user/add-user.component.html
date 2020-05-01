@@ -1,0 +1,124 @@
+<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    <div class="uk-width-1-1">
+        <app-navbar></app-navbar>
+    </div>
+
+    <div class="uk-width-1-5 uk-visible@l">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="uk-width-expand" style="min-height: calc(100vh - 70px);">
+
+        <div class="uk-container uk-section" style="width: 80%;">
+            <h2>Enter user details</h2>
+
+            <form (ngSubmit)="onAddUser(addUserform)" #addUserform="ngForm" class="uk-form-stacked uk-card uk-card-default uk-padding border-radius-20">
+                <fieldset class="uk-fieldset">
+
+                    <!-- Name field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                            Name <span class="uk-text-danger">*</span>
+                        </label>
+
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" [class.uk-form-danger]="fullName.invalid && fullName.touched" type="text" placeholder="John Doe" name="fullName" [(ngModel)]="currentUser.fullName" #fullName="ngModel" required minlength="3">
+                        </div>
+
+                        <!-- Validation errors -->
+                        <div *ngIf="fullName.errors && fullName.touched">
+                            <p [hidden]="!fullName.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">User Name is required.</p>
+                            <p [hidden]="!fullName.errors?.minlength" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be at least 3 caracters.</p>
+                        </div>
+                    </div>
+
+                    <!-- Email field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                            Email <span class="uk-text-danger">*</span>
+                        </label>
+
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" [class.uk-form-danger]="email.invalid && email.touched" type="text" placeholder="example@gmail.com" name="email" [(ngModel)]="currentUser.email" #email="ngModel" required pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?">
+                        </div>
+
+                        <!-- Validation errors -->
+                        <div *ngIf="email.errors && email.touched">
+                            <p [hidden]="!email.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Email required.</p>
+                            <p [hidden]="!email.errors?.pattern" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Email is not valid.</p>
+                            <p [hidden]="!email.errors?.emailExist" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">The email address is already in use by another user.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Password field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                            Password <span class="uk-text-danger">*</span>
+                        </label>
+
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" [class.uk-form-danger]="password.invalid && password.touched" type="password" placeholder="******" name="password" [(ngModel)]="currentUser.password" #password="ngModel" required minlength="6">
+                        </div>
+
+                        <!-- Validation errors -->
+                        <div *ngIf="password.errors && password.touched">
+                            <p [hidden]="!password.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Password required.</p>
+                            <p [hidden]="!password.errors?.minlength" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be more at least 6 caracters.</p>
+                        </div>
+                    </div>
+
+                    <!-- Confirm password field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                            Confirm Password <span class="uk-text-danger">*</span>
+                        </label>
+
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" [class.uk-form-danger]="userConfPassword.invalid && userConfPassword.touched || currentUser.confirmPassword != currentUser.password && userConfPassword.touched" type="password" placeholder="******" name="confirmPassword"
+                                [(ngModel)]="currentUser.confirmPassword" #userConfPassword="ngModel" minlength="6" required>
+                        </div>
+
+                        <!-- Validation errors -->
+                        <p [hidden]="!userConfPassword.errors?.required || !userConfPassword.touched" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Confirm password required.
+                        </p>
+
+                        <p [hidden]="currentUser.confirmPassword == currentUser.password || !userConfPassword.touched || userConfPassword.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be the same as the password.
+                        </p>
+                    </div>
+
+                    <!-- Role field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                            Role <span class="uk-text-danger">*</span>
+                        </label>
+
+                        <div class="uk-form-controls">
+                            <select class="uk-select border-radius-10" [class.uk-form-danger]="userRole.invalid && userRole.touched" [(ngModel)]="currentUser.role" name="role" #userRole="ngModel" required>
+                                <option value="" disabled selected>Select user role</option>
+                                <option>User</option>
+                                <option>Admin</option>
+                            </select>
+                        </div>
+
+                        <!-- Validation errors -->
+                        <div *ngIf="userRole.errors && userRole.touched">
+                            <p [hidden]="!userRole.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">User role required.</p>
+                        </div>
+                    </div>
+
+                    <!-- Submit  -->
+                    <div *ngIf="loading" class="uk-margin">
+                        <button class="uk-button uk-button-primary uk-width-1-1 uk-text-bold uk-border-pill" type="submit" uk-spinner="ratio: 0.9"></button>
+                    </div>
+                    <div *ngIf="!loading" class="uk-margin">
+                        <button class="uk-button uk-button-primary uk-width-1-1 uk-text-bold uk-border-pill" type="submit">Add User</button>
+                    </div>
+
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+
+</div>

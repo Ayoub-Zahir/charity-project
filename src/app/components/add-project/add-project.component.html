@@ -1,0 +1,127 @@
+<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    <div class="uk-width-1-1">
+        <app-navbar></app-navbar>
+    </div>
+
+    <div class="uk-width-1-5 uk-visible@l">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="uk-width-expand" style="min-height: calc(100vh - 70px);">
+
+        <div class="uk-container uk-section" style="width: 80%;">
+
+            <h2>Enter project details</h2>
+
+            <form (ngSubmit)="onAddProject(addProjectform)" #addProjectform="ngForm" class="uk-form-stacked uk-card uk-card-default uk-padding border-radius-20">
+                <fieldset class="uk-fieldset">
+
+                    <!-- Project name field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">
+                            Project Name
+                            <span class="uk-text-danger">*</span>
+                        </label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" [class.uk-form-danger]="projectName.invalid && projectName.touched" type="text" placeholder="project name" name="ProjectName" [(ngModel)]="currentProject.projectName" #projectName="ngModel" required minlength="3">
+                        </div>
+
+                        <!-- Validation errors -->
+                        <div *ngIf="projectName.errors && projectName.touched">
+                            <p [hidden]="!projectName.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Project name required.</p>
+                            <p [hidden]="!projectName.errors?.minlength" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be more at least 3 caracters.</p>
+                        </div>
+                    </div>
+
+                    <!-- Start date field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">
+                            Start Date 
+                            <span class="uk-text-danger">*</span>
+                        </label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" type="date" name="startDate" [(ngModel)]="currentProject.startDate" required>
+                        </div>
+                    </div>
+
+                    <!-- Assign Users field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">
+                            Assign Users
+                            <span class="uk-text-danger">*</span>
+                        </label>
+
+                        <div class="uk-form-controls">
+                            <input class="uk-input uk-text-left border-radius-10" value="Select users" type="button">
+                            <div uk-dropdown="mode: click" style="padding: 15px 25px;">
+
+                                <ul *ngFor="let user of users" class="uk-nav uk-dropdown-nav">
+
+                                    <li class="attached-user" ngModelGroup="attachedUsers">
+                                        <input class="uk-checkbox" type="checkbox" name="{{user.name}}" [ngModel]>
+
+                                        <img src="assets/img/user.svg" class="uk-border-circle uk-text-middle uk-margin-small-right" width="30" height="30"> {{user.name}}
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">
+                            Budget
+                        </label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" type="number" min="0" placeholder="$1000.00" name="budget" [(ngModel)]="currentProject.budget">
+                        </div>
+                    </div>
+
+                    <!-- Location field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">
+                            Location
+                        </label>
+                        <div class="uk-form-controls">
+                            <select class="uk-select border-radius-10" [(ngModel)]="currentProject.location" name="location">
+                                <option>Pakistan</option>
+                                <option>Sudia Arabia</option>
+                                <option>France</option>
+                                <option>America</option>
+                                <option>Canada</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Estime cost field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">Estime Cost</label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" type="number" min="0" placeholder="$1000.00" name="estimeCost" [(ngModel)]="currentProject.estimeCost">
+                        </div>
+                    </div>
+
+                    <!-- Description  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="form-stacked-text">Project Description</label>
+                        <div class="uk-form-controls">
+                            <textarea class="uk-textarea border-radius-10" rows="4" placeholder="Project description" name="description" [(ngModel)]="currentProject.description"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit  -->
+                    <!-- <div *ngIf="loading" class="uk-margin">
+                        <button class="uk-button uk-button-primary uk-width-1-1 uk-text-bold uk-border-pill" type="submit" uk-spinner="ratio: 0.9"></button>
+                    </div> -->
+                    <div class="uk-margin">
+                        <button class="uk-button uk-button-primary uk-width-1-1 uk-text-bold uk-border-pill" type="submit">Add Project</button>
+                    </div>
+
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,84 @@
+<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    <div class="uk-width-1-1">
+        <app-navbar></app-navbar>
+    </div>
+
+    <div class="uk-width-1-5 uk-visible@l">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="uk-width-expand" style="min-height: calc(100vh - 70px);">
+        <div class="uk-container uk-section">
+
+            <!-- Header  -->
+            <div class="uk-clearfix">
+                <h2 class="uk-float-left">Users {{ !loading && !deleteProcessLoading ? '('+ users.length + ')' : '' }}</h2>
+                <button class="uk-button uk-button-primary uk-float-right uk-text-bold uk-border-pill" routerLink="/users/add">
+                    <span class="uk-margin-small-right" uk-icon="plus"></span> Add User
+                </button>
+            </div>
+
+            <!-- Table of users  -->
+            <div class="uk-card uk-card-default uk-padding border-radius-20">
+
+                <!-- Loading fetching users...  -->
+                <h3 *ngIf="loading && !deleteProcessLoading" class="uk-text-center" style="margin: 20px;">Fetching Users <span class="uk-margin-left" uk-spinner></span></h3>
+
+                <!-- No Users found Error  -->
+                <h3 *ngIf="!loading && users.length == 0 && !deleteProcessLoading" class="uk-text-center" style="margin: 20px;">There is no Users ...</h3>
+
+                <!-- Loading deleting users...  -->
+                <h3 *ngIf="!loading && deleteProcessLoading" class="uk-text-center" style="margin: 20px;">Deleting <span class="uk-margin-left" uk-spinner></span></h3>
+
+                <!-- Users  -->
+                <table *ngIf="!loading && users.length != 0 && !deleteProcessLoading" class="uk-table uk-table-divider uk-text-nowrap table-hover">
+                    <thead>
+                        <tr class="uk-text-center">
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Assigned Projects</th>
+                            <th>Last Sign In</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="uk-box-shadow-hover-medium" *ngFor="let user of users">
+
+                            <td routerLink="/users/{{user.uid}}" style="cursor: pointer;">
+                                <img src="{{user.imgURL}}" alt="{{user.fullName}}Img" class="uk-border-circle uk-preserve-width" width="50" height="50">
+                            </td>
+
+                            <td class="uk-text-middle">
+                                {{user.fullName? user.fullName : '###' | titlecase}} <br>
+                                <span class="uk-text-muted" style="font-size: .9rem;">{{user.email}}</span>
+                            </td>
+
+                            <td class="uk-text-middle">{{user.role}}</td>
+
+                            <td class="uk-text-middle">
+                                <button class="uk-button uk-button-default uk-border-pill" type="button">Project 1</button>
+                                <button class="uk-button uk-button-default uk-border-pill" type="button">+2</button>
+                                <!-- <div uk-dropdown="mode: click" style="padding: 20px;">
+                                    <ul class="uk-nav uk-dropdown-nav">
+                                        <li class="uk-active"><a href="#">Project 2</a></li>
+                                        <li><a href="#">Project 1 </a></li>
+                                    </ul>
+                                </div> -->
+                            </td>
+
+                            <td class="uk-text-middle">{{user.lastSigninTime | date}}</td>
+
+                            <td class="uk-text-middle">
+                                <a routerLink="/users/edit/{{user.uid}}" class="uk-icon-button uk-margin-small-right text-primary" uk-icon="pencil"></a>
+                                <a (click)="onDeleteUser(user.uid)" class="uk-icon-button text-danger" uk-icon="trash"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

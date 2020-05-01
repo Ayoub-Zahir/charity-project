@@ -1,0 +1,52 @@
+.uk-position-top {
+    top: -100px;
+}
+
+.uk-label {
+    background-color: #51CF66 !important;
+    color: rgba(255, 255, 255, 0.952) !important;
+    padding: 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: capitalize;
+}
+
+.border-radius {
+    border-radius: 12px;
+}
+
+.grey-bg {
+    background-color: whitesmoke;
+}
+
+.danger-bg {
+    background-color: #F25F5C;
+}
+
+.success-bg {
+    background-color: #51CF66;
+}
+
+.margin-top {
+    margin-top: 70px;
+    padding: 0 30px !important;
+}
+
+.margin {
+    margin: 20px;
+    padding: 20px;
+}
+
+.uk-card {
+    padding: 25px;
+}
+
+.ls {
+    background-image: url(../../../assets/icons/last-signin.svg);
+    background-size: cover;
+    height: 25px;
+    width: 35px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}

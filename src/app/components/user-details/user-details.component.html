@@ -1,0 +1,93 @@
+<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    <div class="uk-width-1-1">
+        <app-navbar></app-navbar>
+    </div>
+
+    <div class="uk-width-1-5 uk-visible@l">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="uk-width-expand" style="min-height: calc(100vh - 70px);">
+
+        <div class="uk-container" style="width: 80%;">
+
+            <!-- User details  -->
+            <div class="uk-section">
+
+                <!-- Header  -->
+                <div class="uk-clearfix">
+                    <h2 class="uk-float-left">User details</h2>
+
+                    <!-- Edit && Delete button  -->
+                    <div *ngIf="!loading && currentUser" class="uk-float-right">
+                        <a routerLink="/users/edit/{{currentUser?.uid}}" class="uk-button uk-button-secondary edit-btn uk-text-bold">
+                            <span class="uk-margin-small-right" uk-icon="icon: pencil"></span> Edit
+                        </a>
+
+                        <button (click)="onDeleteUser(currentUser.uid)" class="uk-button uk-button-danger delete-btn uk-text-bold">
+                            <span class="uk-margin-small-right" uk-icon="icon: trash"></span> Delete
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div class="uk-card uk-card-default uk-padding border-radius-20">
+
+                    <!-- Loading fetching users...  -->
+                    <h3 *ngIf="loading" class="uk-text-center" style="margin: 20px;">Fetching the User <span class="uk-margin-left" uk-spinner></span></h3>
+
+                    <!-- No Users found Error  -->
+                    <h3 *ngIf="!loading && !currentUser" class="uk-text-center" style="margin: 20px;">There is no User with this uid ...</h3>
+
+                    <!-- User info  -->
+                    <div *ngIf="!loading && currentUser">
+                        <!-- Part1: Profile Picture  -->
+                        <img class="uk-align-center uk-border-circle uk-position-top" src="{{currentUser.imgURL===null ? currentUser.defaultImg : currentUser.imgURL}}" width="180" height="180">
+
+                        <!-- Part2: Other info  -->
+                        <div class="margin-top">
+
+                            <!-- User Name -->
+                            <h3 class="uk-card-title uk-text-center uk-text-bold" style="margin: 15px 0 0 0;">
+                                {{currentUser.fullName | titlecase}}</h3>
+
+                            <!-- User Role -->
+                            <h5 class="uk-card-title uk-text-center uk-text-bold uk-text-muted uk-heading-small" style="font-size: 1.1rem; margin-top: 8px;">
+                                {{currentUser.role}}</h5>
+
+
+                            <!-- More info  -->
+                            <ul class="uk-list uk-list-large uk-list-divider uk-margin-top ">
+                                <li></li>
+                                <li>
+                                    <span class="material-icons uk-text-middle text-primary">email</span> Email:
+                                    <span class="uk-text-bold">{{currentUser.email}}</span>
+                                </li>
+
+                                <li>
+                                    <span class="material-icons uk-text-middle text-primary">account_box</span> Account :
+                                    <span *ngIf="!currentUser.disabled" class="uk-text-bold text-success">Activated</span>
+                                    <span *ngIf="currentUser.disabled" class="uk-text-bold text-danger">Disabled</span>
+                                </li>
+
+                                <li *ngIf="currentUser.phone">
+                                    <span class="material-icons uk-text-middle text-primary ">call</span> Phone: <span class="uk-text-bold ">{{currentUser.phone}}</span>
+                                </li>
+                                <li>
+
+                                    <span class="material-icons uk-text-middle text-primary ">schedule</span> Creation Time:
+                                    <span class="uk-text-bold">{{currentUser.creationDate | date}}</span>
+                                </li>
+
+                                <li *ngIf="currentUser.lastSigninTime">
+                                    <span class="material-icons uk-text-middle ls"></span> Last Sigin Time: <span class="uk-text-bold">{{currentUser.lastSigninTime | date: 'medium'}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
