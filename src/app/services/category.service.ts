@@ -17,7 +17,7 @@ export class CategoryService {
     private categoryDocument: AngularFirestoreDocument<Category>;
 
     constructor(private angularFirestore: AngularFirestore) {
-        this.categorysCollection = this.angularFirestore.collection('categories', ref => ref.orderBy('name', 'desc'));
+        this.categorysCollection = this.angularFirestore.collection('categories', ref => ref.orderBy('name', 'asc'));
     }
 
     add(category: Category): Promise<DocumentReference>{
