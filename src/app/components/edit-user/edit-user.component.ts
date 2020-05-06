@@ -5,6 +5,7 @@ import { CloudFunctionsService } from 'src/app/services/cloud-functions.service'
 
 import { User } from 'src/app/models/User';
 import Swal from 'sweetalert2';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
     selector: 'app-edit-user',
@@ -27,6 +28,7 @@ export class EditUserComponent implements OnInit {
     constructor(
         private activatedRoute: ActivatedRoute,
         private cloudFunctionsService: CloudFunctionsService,
+        private userService: UserService,
         private router: Router,
         private ngZone: NgZone
     ) { }
@@ -34,31 +36,12 @@ export class EditUserComponent implements OnInit {
     ngOnInit(): void {
         const uid: string = this.activatedRoute.snapshot.paramMap.get('uid');
 
-        this.cloudFunctionsService.getUser(uid)
-            .subscribe(user => {
+        this.userService.getUser(uid).subscribe(user => {
+            this.currentUser = user;
+            this.loading = false;
 
-                // Set default users img
-                if (user.photoURL === null) {
-                    if (user.customClaims.role === 'Admin')
-                        user.defaultImg = 'assets/img/admin2.svg';
-                    if (user.customClaims.role === 'User')
-                        user.defaultImg = 'assets/img/user2.svg';
-                }
+        }, err => console.error(err.message));
 
-                this.currentUser = {
-                    uid: user.uid,
-                    email: user.email,
-                    role: user.customClaims.role,
-                    fullName: user.displayName,
-                    imgURL: user.photoURL,
-                    phone: user.phoneNumber,
-                    defaultImg: user.defaultImg,
-                    disabled: user.disabled
-                }
-
-                // Stop loading ...
-                this.loading = false;
-            })
     }
 
     onEditUser(editUserform: { valid: boolean, value: User, form: any, controls: any }) {
@@ -87,23 +70,20 @@ export class EditUserComponent implements OnInit {
                         editUserform.controls.email.setErrors({ 'emailExist': true });
                     }
                     else {
-                        // Success updating user => Hard refresh
+                        // Success : Redirect to => user details
                         this.ngZone.run(() => {
-                            this.router.navigateByUrl(`/dashboard`, { skipLocationChange: true })
+                            this.router.navigate([`/users/${this.currentUser.uid}`])
                                 .then(() => {
-                                    this.router.navigate([`/users/${this.currentUser.uid}`])
-                                        .then(() => {
-                                            // Alert success updating user
-                                            Swal.fire({
-                                                position: 'top-end',
-                                                icon: 'success',
-                                                titleText: 'The User has been successfully updated',
-                                                showConfirmButton: false,
-                                                timer: 2300,
-                                            });
-                                        });
+                                    // Alert success updating user
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        titleText: 'The User has been successfully updated',
+                                        showConfirmButton: false,
+                                        timer: 2300,
+                                    });
                                 });
-                        });
+                        })
                     }
                 });
         }

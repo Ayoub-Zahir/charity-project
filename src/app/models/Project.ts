@@ -1,9 +1,14 @@
+import { User } from './User';
+
 export interface Project {
+    id?: string,
     projectName: string,
     startDate: any,
-    attachedUsers?: any,
+    location: string,
+    assignedUsers?: User[],
+    isComplete?: boolean,
     budget?: number,
     estimeCost?: number,
-    location?: string,
+    estimeTime?: Date,
     description?: string,
 }

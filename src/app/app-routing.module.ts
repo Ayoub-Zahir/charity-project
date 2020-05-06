@@ -10,30 +10,40 @@ import { AddProjectComponent } from './components/add-project/add-project.compon
 import { LoginComponent } from './components/login/login.component';
 import { EditUserComponent } from './components/edit-user/edit-user.component';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
+import { ProjectDetailsComponent } from './components/project-details/project-details.component';
+import { EditProjectComponent } from './components/edit-project/edit-project.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { EditCategoryComponent } from './components/edit-category/edit-category.component';
 
 // Guards
 import { AuthGuard } from './guards/auth.guard';
+import { SuperAdminGuard } from './guards/super-admin.guard';
 
 const routes: Routes = [
   { path: "", redirectTo: '/projects', pathMatch: 'full' },
   { path: "dashboard", redirectTo: '/projects', pathMatch: 'full' },
   { path: "login", component: LoginComponent },
-  // User Management ------------------------------------------------------------------
-  { path: "users", component: DashUsersComponent, canActivate: [AuthGuard] },
-  { path: "users/add", component: AddUserComponent, canActivate: [AuthGuard] },
-  { path: "users/edit/:uid", component: EditUserComponent, canActivate: [AuthGuard] },
-  { path: "users/:uid", component: UserDetailsComponent, canActivate: [AuthGuard] },
-  // Project Management ---------------------------------------------------------------
+  { path: "settings", component: SettingsComponent, canActivate: [SuperAdminGuard] },
+  { path: "category/edit/:id", component: EditCategoryComponent, canActivate: [SuperAdminGuard] },
+  // User Management ----------------------------------------------------------------------
+  { path: "users", component: DashUsersComponent, canActivate: [SuperAdminGuard] },
+  { path: "users/:uid", component: UserDetailsComponent, canActivate: [SuperAdminGuard] },
+  { path: "user/add", component: AddUserComponent, canActivate: [SuperAdminGuard] },
+  { path: "user/edit/:uid", component: EditUserComponent, canActivate: [SuperAdminGuard] },
+  // Project Management --------------------------------------------------------------------
   { path: "projects", component: DashProjectsComponent, canActivate: [AuthGuard] },
-  { path: "projects/add", component: AddProjectComponent, canActivate: [AuthGuard] },
+  { path: "projects/:id", component: ProjectDetailsComponent, canActivate: [AuthGuard] },
+  { path: "project/add", component: AddProjectComponent, canActivate: [SuperAdminGuard] },
+  { path: "project/edit/:id", component: EditProjectComponent, canActivate: [SuperAdminGuard] },
+  //----------------------------------------------------------------------------------------
   { path: "**", component: PageNotFoundComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers : [AuthGuard]
+  providers : [AuthGuard, SuperAdminGuard]
 })
 export class AppRoutingModule { }
 
-export const routingComponents = [DashUsersComponent, DashProjectsComponent, PageNotFoundComponent, AddUserComponent, AddProjectComponent, LoginComponent, EditUserComponent, UserDetailsComponent];
+export const routingComponents = [DashUsersComponent, DashProjectsComponent, PageNotFoundComponent, AddUserComponent, AddProjectComponent, LoginComponent, EditUserComponent, UserDetailsComponent, EditProjectComponent, ProjectDetailsComponent, SettingsComponent, EditCategoryComponent];

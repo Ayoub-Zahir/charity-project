@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
+    userRole: string;
 
     constructor(
         private authService: AuthService,
@@ -15,6 +16,10 @@ export class SidebarComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.authService.getAuthClaims().subscribe(claims => {
+            if(claims)
+                this.userRole = claims.role;
+        })
     }
 
     logout() {

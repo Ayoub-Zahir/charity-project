@@ -26,6 +26,10 @@ export class AuthService {
         return this.angularFireAuth.authState;
     }
 
+    getAuthUid(): string{
+        return this.angularFireAuth.auth.currentUser.uid;
+    }
+    
     // return: Observable<firebase.auth.IdTokenResult.claims>
     getAuthClaims() {
         return this.angularFireAuth.idTokenResult.pipe(map(token => {

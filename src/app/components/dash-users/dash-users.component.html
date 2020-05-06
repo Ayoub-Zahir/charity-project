@@ -3,7 +3,7 @@
         <app-navbar></app-navbar>
     </div>
 
-    <div class="uk-width-1-5 uk-visible@l">
+    <div class="uk-width-1-5 uk-visible@l" style="max-width: 240px !important;">
         <app-sidebar></app-sidebar>
     </div>
 
@@ -13,7 +13,7 @@
             <!-- Header  -->
             <div class="uk-clearfix">
                 <h2 class="uk-float-left">Users {{ !loading && !deleteProcessLoading ? '('+ users.length + ')' : '' }}</h2>
-                <button class="uk-button uk-button-primary uk-float-right uk-text-bold uk-border-pill" routerLink="/users/add">
+                <button class="uk-button uk-button-primary uk-float-right uk-text-bold uk-border-pill" routerLink="/user/add">
                     <span class="uk-margin-small-right" uk-icon="plus"></span> Add User
                 </button>
             </div>
@@ -25,7 +25,7 @@
                 <h3 *ngIf="loading && !deleteProcessLoading" class="uk-text-center" style="margin: 20px;">Fetching Users <span class="uk-margin-left" uk-spinner></span></h3>
 
                 <!-- No Users found Error  -->
-                <h3 *ngIf="!loading && users.length == 0 && !deleteProcessLoading" class="uk-text-center" style="margin: 20px;">There is no Users ...</h3>
+                <h3 *ngIf="!loading && users.length == 0 && !deleteProcessLoading" class="uk-text-center" style="margin: 20px;">There are no Users in the system ...</h3>
 
                 <!-- Loading deleting users...  -->
                 <h3 *ngIf="!loading && deleteProcessLoading" class="uk-text-center" style="margin: 20px;">Deleting <span class="uk-margin-left" uk-spinner></span></h3>
@@ -37,17 +37,17 @@
                             <th>Photo</th>
                             <th>Name</th>
                             <th>Role</th>
-                            <th>Assigned Projects</th>
+                            <th>Account</th>
                             <th>Last Sign In</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr class="uk-box-shadow-hover-medium" *ngFor="let user of users">
+                        <tr class="uk-box-shadow-hover-medium fw-500" *ngFor="let user of users">
 
                             <td routerLink="/users/{{user.uid}}" style="cursor: pointer;">
-                                <img src="{{user.imgURL}}" alt="{{user.fullName}}Img" class="uk-border-circle uk-preserve-width" width="50" height="50">
+                                <img src="{{user.imgURL == null ? user.defaultImg : user.imgURL}}" alt="{{user.fullName}}Img" class="uk-border-circle uk-preserve-width" width="50" height="50">
                             </td>
 
                             <td class="uk-text-middle">
@@ -58,20 +58,14 @@
                             <td class="uk-text-middle">{{user.role}}</td>
 
                             <td class="uk-text-middle">
-                                <button class="uk-button uk-button-default uk-border-pill" type="button">Project 1</button>
-                                <button class="uk-button uk-button-default uk-border-pill" type="button">+2</button>
-                                <!-- <div uk-dropdown="mode: click" style="padding: 20px;">
-                                    <ul class="uk-nav uk-dropdown-nav">
-                                        <li class="uk-active"><a href="#">Project 2</a></li>
-                                        <li><a href="#">Project 1 </a></li>
-                                    </ul>
-                                </div> -->
+                                <span *ngIf="!user.disabled" class="uk-text-bold text-success">Activated</span>
+                                <span *ngIf="user.disabled" class="uk-text-bold text-danger">Disabled</span>
                             </td>
 
-                            <td class="uk-text-middle">{{user.lastSigninTime | date}}</td>
+                            <td class="uk-text-middle">{{user.lastSigninTime == null ? 'Is not yet sign in' : user.lastSigninTime.seconds * 1000 | date: 'MMM d, y, h:mm a' }}</td>
 
                             <td class="uk-text-middle">
-                                <a routerLink="/users/edit/{{user.uid}}" class="uk-icon-button uk-margin-small-right text-primary" uk-icon="pencil"></a>
+                                <a routerLink="/user/edit/{{user.uid}}" class="uk-icon-button uk-margin-small-right text-primary" uk-icon="pencil"></a>
                                 <a (click)="onDeleteUser(user.uid)" class="uk-icon-button text-danger" uk-icon="trash"></a>
                             </td>
                         </tr>

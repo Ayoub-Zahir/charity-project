@@ -1,0 +1,58 @@
+.project-img {
+    background-image: url(../../../assets/img/project.svg);
+    background-size: contain;
+    height: 100%;
+    width: 100%;
+    min-height: 180px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.text-muted-fs {
+    font-size: 15px;
+}
+
+
+/** Button Style********************/
+
+.complete {
+    background-color: #EBF9E9;
+    color: rgb(85, 212, 83);
+    border-radius: 13px;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 0 15px;
+}
+
+.progress {
+    background-color: rgb(212, 231, 251);
+    color: #3C91E6;
+    border-radius: 13px;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 0 15px;
+}
+
+
+/** Tab Nav **************************/
+
+#tab-nav {
+    margin-top: 60px !important;
+}
+
+#tab-nav li a {
+    font-size: 16px;
+}
+
+.uk-active {
+    font-weight: 500;
+}
+
+#content>div {
+    padding-top: 30px !important;
+}
+
+.uk-tab>.uk-active>a {
+    border-color: #3C91E6 !important;
+    border-bottom-width: 2px !important;
+}

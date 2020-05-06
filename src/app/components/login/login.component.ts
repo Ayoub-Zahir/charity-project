@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
     selector: 'app-login',
@@ -16,6 +17,7 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private authService: AuthService,
+        private userService: UserService,
         private router: Router
     ) { }
 
@@ -33,6 +35,9 @@ export class LoginComponent implements OnInit {
             // Login from the Firebase authentication service
             this.authService.login(form.value.email, form.value.password)
                 .then(() => {
+                    
+                    this.userService.updateLastSigninTime(this.authService.getAuthUid());
+
                     this.router.navigate(['/projects']);
 
                     // Success login

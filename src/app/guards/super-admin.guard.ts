@@ -5,7 +5,7 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
     providedIn: 'root'
 })
-export class AdminGuard implements CanActivate {
+export class SuperAdminGuard implements CanActivate {
 
     constructor(
         private authService: AuthService,
@@ -15,10 +15,10 @@ export class AdminGuard implements CanActivate {
     canActivate(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             this.authService.getAuthClaims().subscribe(claims => {
-                if (claims.admin) {
+                if (claims?.role === 'Super Admin') {
                     resolve(true);
                 } else {
-                    this.router.navigate(['/dash-clients']);
+                    this.router.navigate(['/projects']);
                     reject(false);
                 }
             });

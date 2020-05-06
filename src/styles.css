@@ -40,6 +40,23 @@ input:-webkit-autofill:active {
 }
 
 
+/** Media Query  ****************************/
+
+@media (min-width: 960px) {
+    .uk-container {
+        padding-left: 70px !important;
+        padding-right: 70px !important;
+    }
+}
+
+@media (max-width: 960px) {
+    .uk-container {
+        padding-left: 50px !important;
+        padding-right: 50px !important;
+    }
+}
+
+
 /** SweetAlert2  ****************************/
 
 .swal2-icon {
@@ -145,7 +162,7 @@ input:-webkit-autofill:active {
 }
 
 .uk-button-secondary {
-    background-color: #0D1B1E !important;
+    background-color: rgba(13, 27, 30, 0.856) !important;
 }
 
 

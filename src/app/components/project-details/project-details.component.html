@@ -1,0 +1,125 @@
+<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    <div class="uk-width-1-1">
+        <app-navbar></app-navbar>
+    </div>
+
+    <div class="uk-width-1-5 uk-visible@l" style="max-width: 240px !important;">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="uk-width-expand" style="min-height: calc(100vh - 70px);">
+
+        <div class="uk-container">
+
+            <!-- Tab navigation  -->
+            <ul id="tab-nav" uk-tab>
+                <li class="uk-active">
+                    <a href="#projectInfo">Project Info</a>
+                </li>
+                <li>
+                    <a href="#projectExpenses">Project Expenses</a>
+                </li>
+                <li>
+                    <a href="#projectCash">Project Cash</a>
+                </li>
+                <li>
+                    <a href="#financialStatements">Project Financial Statements</a>
+                </li>
+            </ul>
+
+            <div id="content" class="uk-switcher">
+
+                <div id="projectInfo" class="uk-section">
+
+                    <!-- Header  -->
+                    <div class="uk-clearfix">
+                        <h2 class="uk-float-left">Project Info</h2>
+
+                        <button *ngIf="userRole === 'Super Admin'" class="uk-button uk-button-secondary uk-float-right uk-text-bold uk-border-pill" routerLink="/project/edit/{{projectId}}">
+                            <span class="uk-margin-small-right" uk-icon="pencil"></span> Edit Project
+                        </button>
+                    </div>
+
+                    <!-- Card -->
+                    <div class="uk-card uk-card-default uk-padding border-radius-20" style="margin: auto;">
+
+                        <!-- Loading fetching Project...  -->
+                        <h3 *ngIf="loading" class="uk-text-center" style="margin: 20px;">Fetching the project <span class="uk-margin-left" uk-spinner></span></h3>
+
+                        <!-- No project found...  -->
+                        <h3 *ngIf="!loading && !currentProject" class="uk-text-center" style="margin: 20px;">There is no project with this Id.</h3>
+
+                        <!-- Content  -->
+                        <div *ngIf="!loading && currentProject" uk-grid>
+
+                            <!-- Project img  -->
+                            <div class="uk-width-1-4 uk-padding-remove">
+                                <div class="project-img uk-padding-remove"></div>
+                            </div>
+
+                            <!-- Info  -->
+                            <div class="uk-width-expand">
+
+                                <!-- Project Name  -->
+                                <h3 class="uk-text-middle">
+                                    {{currentProject.projectName}}
+                                    <button *ngIf="currentProject.isComplete" class="uk-button uk-button-default uk-margin-small-left complete">
+                                        complete <span class="material-icons uk-text-middle">done_all</span>
+                                    </button>
+                                    <button *ngIf="!currentProject.isComplete" class="uk-button uk-button-default uk-margin-small-left progress">
+                                        in progress <span class="material-icons uk-text-middle">autorenew</span>
+                                    </button>
+                                </h3>
+
+                                <span class="uk-text-muted text-muted-fs uk-margin-right">
+                                    <span uk-icon="location"></span> {{currentProject.location}}
+                                </span>
+
+                                <span class="uk-text-muted text-muted-fs">
+                                    <span uk-icon="clock"></span> Start Date : {{currentProject.startDate|date}}
+                                </span>
+
+                                <p>{{currentProject.description}}</p>
+
+                                <span class="uk-text-muted text-muted-fs uk-margin-top">Attached Users</span>
+
+                                <div class="uk-margin-top">
+                                    <span class="uk-margin-right" *ngFor="let user of currentProject.assignedUsers">
+
+                                        <img src="{{user.imgURL == null ? user.defaultImg : user.imgURL}}"
+                                            alt="{{user.fullName}}Img" class="uk-border-circle uk-preserve-width"
+                                            width="40" height="40">
+
+                                        <span class="uk-text-middle uk-margin-left"
+                                            style="font-size: 14px;">{{user.fullName}}</span>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div id="projectExpenses" class="uk-section">
+                    <h2>Project Expenses</h2>
+
+                </div>
+
+                <div id="projectCash" class="uk-section">
+                    <h2>Project Cash</h2>
+
+                </div>
+
+                <div id="financialStatements" class="uk-section">
+                    <h2>Project Financial Statements</h2>
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    <div class="uk-width-1-1">
+        <app-navbar></app-navbar>
+    </div>
+
+    <div class="uk-width-1-5 uk-visible@l" style="max-width: 240px !important;">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="uk-width-expand" style="min-height: calc(100vh - 70px);">
+
+        <div class="uk-container uk-section">
+            <h2>Update Category</h2>
+
+            <form (ngSubmit)="onEditCategory(editCategoryform)" #editCategoryform="ngForm" class="uk-form-stacked uk-card uk-card-default uk-padding border-radius-20">
+
+                <!-- fetching categories... -->
+                <h3 *ngIf="loading" class="uk-text-center" style="margin: 20px;">Fetching the category <span class="uk-margin-left" uk-spinner></span></h3>
+
+                <!-- No categories found Error  -->
+                <h3 *ngIf="!loading && !currentCategory" class="uk-text-center" style="margin: 20px;">There are no Category with this ID ...</h3>
+
+                <fieldset *ngIf="!loading && currentCategory" class="uk-fieldset">
+
+                    <!-- Category name field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                            Category Name
+                            <span class="uk-text-danger">*</span>
+                        </label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input border-radius-10" [class.uk-form-danger]="categoryName.invalid && categoryName.touched" type="text" placeholder="Category name" name="name" [(ngModel)]="currentCategory.name" #categoryName="ngModel" required minlength="3">
+                        </div>
+
+                        <!-- Validation errors -->
+                        <div *ngIf="categoryName.errors && categoryName.touched">
+                            <p [hidden]="!categoryName.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Category name required.</p>
+                            <p [hidden]="!categoryName.errors?.minlength" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be more at least 3 caracters.</p>
+                        </div>
+                    </div>
+
+                    <!-- Type field  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                            Category Type <span class="uk-text-danger">*</span>
+                        </label>
+
+                        <div class="uk-form-controls">
+                            <select class="uk-select border-radius-10" [class.uk-form-danger]="categoryType.invalid && categoryType.touched" [(ngModel)]="currentCategory.type" name="type" #categoryType="ngModel" required>
+
+                                <option value="" selected disabled>Select type</option>
+                                <option value="costPerUnit">Cost per unit</option>
+                                <option value="fixedCost">Fixed cost</option>
+
+                            </select>
+                        </div>
+
+                        <!-- Validation errors -->
+                        <div *ngIf="categoryType.errors && categoryType.touched">
+                            <p [hidden]="!categoryType.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Category type required.</p>
+                        </div>
+                    </div>
+
+                    <!-- Description  -->
+                    <div class="uk-margin">
+                        <label class="uk-form-label uk-text-bold" for="form-stacked-text">Category Description</label>
+                        <div class="uk-form-controls">
+                            <textarea class="uk-textarea border-radius-10" rows="4" placeholder="Description..." name="description" [(ngModel)]="currentCategory.description"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit  -->
+                    <div *ngIf="editProcessLoading" class="uk-margin">
+                        <button class="uk-button uk-button-warning uk-width-1-1 uk-text-bold uk-border-pill" type="submit" uk-spinner="ratio: 0.9"></button>
+                    </div>
+                    <div *ngIf="!editProcessLoading" class="uk-margin">
+                        <button [disabled]="!editCategoryform.dirty" class="uk-button uk-button-warning uk-width-1-1 uk-text-bold uk-border-pill" type="submit">save changes</button>
+                    </div>
+
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,7 @@
         <app-navbar></app-navbar>
     </div>
 
-    <div class="uk-width-1-5 uk-visible@l">
+    <div class="uk-width-1-5 uk-visible@l" style="max-width: 240px !important;">
         <app-sidebar></app-sidebar>
     </div>
 
@@ -13,37 +13,86 @@
 
             <!-- Header  -->
             <div class="uk-clearfix">
-                <h2 class="uk-float-left">Projects</h2>
-                <button class="uk-button uk-button-primary uk-float-right uk-text-bold uk-border-pill" routerLink="/projects/add">
+                <h2 class="uk-float-left">Projects {{ !loading ? '('+ projects.length + ')' : '' }}</h2>
+                <button *ngIf="userRole === 'Super Admin'" class="uk-button uk-button-primary uk-float-right uk-text-bold uk-border-pill" routerLink="/project/add">
                     <span class="uk-margin-small-right" uk-icon="plus"></span> Add Project
                 </button>
             </div>
 
-            <!-- Table of users  -->
+            <!-- Table of projects  -->
             <div class="uk-card uk-card-default uk-padding border-radius-20">
 
-                <!-- Loading fetching users...  -->
-                <!-- <div class="uk-text-center" [hidden]="!loading">
-                    <div uk-spinner="ratio:1.5"></div>
-                </div> -->
+                <!-- Loading fetching Projects...  -->
+                <h3 *ngIf="loading" class="uk-text-center" style="margin: 20px;">Fetching Projects <span class="uk-margin-left" uk-spinner></span></h3>
 
-                <!-- Users  -->
-                <table class="uk-table uk-table-divider uk-text-nowrap table-hover">
+                <!-- No Projects found Error  -->
+                <h3 *ngIf="!loading && projects.length === 0" class="uk-text-center" style="margin: 20px;">There are no Projects in the system ...</h3>
+
+                <!-- Projects  -->
+                <table *ngIf="!loading && projects.length !== 0" class="uk-table uk-table-divider uk-text-nowrap table-hover">
                     <thead>
                         <tr class="uk-text-center">
-                            <th>Project Name</th>
+                            <th>Project</th>
+                            <th>State</th>
                             <th>Start date</th>
+                            <th>Location</th>
                             <th>Attached Users</th>
                             <th>Cash</th>
                             <th>Expenses</th>
                             <th>Balance</th>
-                            <th>More</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
+                        <tr class="uk-box-shadow-hover-medium fw-500" *ngFor="let project of projects">
+
+                            <td class="uk-text-middle" routerLink="/projects/{{project.id}}" style="cursor: pointer;">{{project.projectName}}</td>
+
+                            <td [class.text-success]="project.isComplete" class="uk-text-middle">{{project.isComplete ? 'Complete' : 'In Progress'}}</td>
+
+                            <td class="uk-text-middle">{{project.startDate | date}}</td>
+
+                            <td class="uk-text-middle">{{project.location}}</td>
+
+                            <!-- Attached Users  -->
+                            <td class="uk-text-middle">
+                                <button class="uk-button uk-button-default uk-border-pill" type="button">{{project.assignedUsers.length}} Users</button>
+
+                                <div *ngIf="project.assignedUsers.length != 0" uk-dropdown="mode: click" style="padding: 5px 15px; border-radius: 10px;">
+
+                                    <ul *ngFor="let user of project.assignedUsers" class="uk-nav uk-dropdown-nav">
+
+                                        <li class="attached-user">
+                                            <a routerLink="/users/{{user.uid}}">
+                                                <img src="{{user.imgURL === null ? user.defaultImg : user.imgURL}}" class="uk-border-circle uk-text-middle uk-margin-small-right" width="40" height="40"> {{user.fullName}}
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                            </td>
+
+                            <td class="uk-text-middle">{{1000|currency}}</td>
+
+                            <td class="uk-text-middle">{{1000|currency}}</td>
+
+                            <td class="uk-text-middle">{{1000|currency}}</td>
+
+                            <!-- More  -->
+                            <td class="uk-text-middle">
+                                <a routerLink="/projects/{{project.id}}" class="uk-icon-button text-primary" uk-icon="info" uk-tooltip="See Project Details"></a>
+
+                                <a *ngIf="userRole === 'Super Admin'" routerLink="/project/edit/{{project.id}}" class="uk-icon-button uk-margin-small-right text-primary" uk-icon="pencil" uk-tooltip="Edit Project"></a>
+                            </td>
+
+                        </tr>
+
                     </tbody>
                 </table>
             </div>
+
         </div>
 
     </div>

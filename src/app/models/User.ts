@@ -8,5 +8,6 @@ export interface User{
     creationDate?: Date,
     lastSigninTime?: Date,
     defaultImg?: string,
-    disabled?: boolean
+    disabled?: boolean,
+    isAssigned?: boolean
 }

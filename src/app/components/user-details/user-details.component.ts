@@ -5,6 +5,7 @@ import { CloudFunctionsService } from 'src/app/services/cloud-functions.service'
 
 import { User } from 'src/app/models/User';
 import Swal from 'sweetalert2';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
     selector: 'app-user-details',
@@ -12,13 +13,16 @@ import Swal from 'sweetalert2';
     styleUrls: ['./user-details.component.css']
 })
 export class UserDetailsComponent implements OnInit {
+    
     currentUser: User;
-
     loading: boolean = true;
+    deleteProcessLoading: boolean = false;
+
 
     constructor(
         private activatedRoute: ActivatedRoute,
         private cloudFunctionsService: CloudFunctionsService,
+        private userService: UserService,
         private router: Router,
         private ngZone: NgZone
     ) { }
@@ -26,33 +30,12 @@ export class UserDetailsComponent implements OnInit {
     ngOnInit() {
         const uid: string = this.activatedRoute.snapshot.paramMap.get('uid');
 
-        this.cloudFunctionsService.getUser(uid)
-            .subscribe(user => {
-                // Set default users img
-                if (user.photoURL === null) {
-                    if (user.customClaims.role === 'Admin')
-                        user.defaultImg = 'assets/img/admin2.svg';
-                    if (user.customClaims.role === 'User')
-                        user.defaultImg = 'assets/img/user2.svg';
-                }
+        this.userService.getUser(uid).subscribe(user => {
+            this.currentUser = user;
+            this.loading = false;
 
-                this.currentUser = {
-                    uid: user.uid,
-                    email: user.email,
-                    role: user.customClaims.role,
-                    fullName: user.displayName,
-                    imgURL: user.photoURL,
-                    phone: user.phoneNumber,
-                    defaultImg: user.defaultImg,
-                    disabled: user.disabled,
-                    creationDate: user.metadata.creationTime,
-                    lastSigninTime: user.metadata.lastSignInTime,
-                }
+        }, err => console.error(err.message));
 
-                // Stop loading ...
-                this.loading = false;
-
-            });
     }
 
     onDeleteUser(uid: string) {
@@ -66,26 +49,28 @@ export class UserDetailsComponent implements OnInit {
             confirmButtonText: 'Yes, delete it!',
         })
             .then(result => {
+
                 if (result.value) {
+                    this.deleteProcessLoading = true;
+
                     this.cloudFunctionsService.deleteUser(uid)
                         .subscribe((res) => {
                             console.log(res);
+                            this.deleteProcessLoading = false;
 
-                            // Success deleting user => Hard refresh
+                            // Success deleting user Redirect => /users 
                             this.ngZone.run(() => {
-                                this.router.navigateByUrl('/dashboard', { skipLocationChange: true })
-                                    .then(() => {
-                                        this.router.navigate(['/users']).then(() => {
-                                            // Success alert after deleting the client
-                                            Swal.fire({
-                                                position: 'top-end',
-                                                icon: 'success',
-                                                titleText: 'The User has been successfully deleted',
-                                                showConfirmButton: false,
-                                                timer: 2000,
-                                            });
-                                        });
+                                this.router.navigate(['/users']).then(() => {
+                                    // Success alert after deleting the client
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        titleText: 'The User has been successfully deleted',
+                                        showConfirmButton: false,
+                                        timer: 2000,
                                     });
+                                });
+
                             });
                         });
                 }

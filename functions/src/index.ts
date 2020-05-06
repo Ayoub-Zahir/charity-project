@@ -36,29 +36,31 @@ export const createNewUser = functions.region('asia-east2').https.onCall((user, 
             displayName: user.fullName
         })
             .then(userRecord => {
+
                 // Set custum claims
-                return admin.auth().setCustomUserClaims(userRecord.uid, {
-                    role: user.role
-                })
-                    .then(() => `${user.role}: ${userRecord.email} has been added successfully`)
+                return admin.auth().setCustomUserClaims(userRecord.uid, { role: user.role })
+                    .then(() => {
+
+                        // Create User record in firestore
+                        return admin.firestore().collection('users').doc(userRecord.uid).set({
+                            uid: userRecord.uid,
+                            email: userRecord.email,
+                            role: user.role,
+                            fullName: userRecord.displayName,
+                            defaultImg: user.role === 'Admin' ? 'assets/img/admin2.svg' : 'assets/img/user2.svg',
+                            creationDate: userRecord.metadata.creationTime,
+                            disabled: userRecord.disabled,
+                            imgURL: null,
+                            phone: null,
+                            lastSigninTime: null,
+                        })
+                            .then(() => `${user.role}: ${userRecord.email} has been added successfully`)
+                            .catch(err => `${err} Error Firestore ...`);
+                    })
                     .catch(err => err);
             })
             .catch(err => err);
     }
-    else
-        return { error: 'Only Super Admin can do this operation.'};
-});
-
-export const getAllUsers = functions.region('asia-east2').https.onCall((any, context) => {
-    if (context.auth?.token.role === 'Super Admin')
-        return admin.auth().listUsers();
-    else
-        return { error: 'Only Super Admin can do this operation.' };
-});
-
-export const getUser = functions.region('asia-east2').https.onCall((uid, context) => {
-    if (context.auth?.token.role === 'Super Admin')
-        return admin.auth().getUser(uid);
     else
         return { error: 'Only Super Admin can do this operation.' };
 });
@@ -74,10 +76,36 @@ export const updateUser = functions.region('asia-east2').https.onCall((user, con
         })
             .then(userNewRecode => {
                 // Set custum claims
-                return admin.auth().setCustomUserClaims(userNewRecode.uid, {
-                    role: user.role
-                })
-                    .then(() => `${user.role}: ${userNewRecode.email} has been updatetd successfully.`)
+                return admin.auth().setCustomUserClaims(userNewRecode.uid, { role: user.role })
+                    .then(() => {
+
+                        return admin.firestore().collection('users').doc(user.uid).update({
+                            email: user.email,
+                            role: user.role,
+                            fullName: user.fullName,
+                            imgURL: user.imgURL === null ? null : user.imgURL,
+                            defaultImg: user.role === 'Admin' ? 'assets/img/admin2.svg' : 'assets/img/user2.svg',
+                            phone: user.phone === null ? null : user.phone,
+                            disabled: user.disabled
+                        })
+                            .then(() => `${user.role}: ${userNewRecode.email} has been updatetd successfully.`)
+                            .catch(err => err);
+                    })
+                    .catch(err => err);
+            })
+            .catch(err => err);
+    else
+        return { error: 'Only Super Admin can do this operation.' };
+});
+
+export const deleteUser = functions.region('asia-east2').https.onCall((uid, context) => {
+
+    if (context.auth?.token.role === 'Super Admin')
+        return admin.auth().deleteUser(uid)
+            .then(() => {
+
+                return admin.firestore().collection('users').doc(uid).delete()
+                    .then(() => `User has been successfully deleted.`)
                     .catch(err => err);
             })
             .catch(err => err);
@@ -93,14 +121,5 @@ export const resetUserPassword = functions.region('asia-east2').https.onCall((us
             .then((userRecode) => `${userRecode.email} : The password has been successfully reset.`)
             .catch(err => err);
     else
-        return { error: 'Only Super Admin can do this operation.'};
-});
-
-export const deleteUser = functions.region('asia-east2').https.onCall((uid, context) => {
-    if (context.auth?.token.role === 'Super Admin')
-        return admin.auth().deleteUser(uid)
-            .then(() => `User has been successfully deleted.`)
-            .catch(err => err);
-    else
-        return { error: 'Only Super Admin can do this operation.'};
+        return { error: 'Only Super Admin can do this operation.' };
 });

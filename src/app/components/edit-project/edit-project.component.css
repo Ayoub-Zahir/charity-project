@@ -1,0 +1,21 @@
+.complete-field {
+    border: solid 1px rgb(229, 229, 229);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+input:checked+.slider {
+    background-color: #51CF66;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #51CF66;
+}
+
+.attached-user {
+    background: whitesmoke;
+    margin: 15px;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+}

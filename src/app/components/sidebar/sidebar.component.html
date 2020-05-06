@@ -12,13 +12,11 @@
 
             <!-- Dashboard -->
             <li class="uk-parent uk-text-left uk-margin-top" routerLinkActive="uk-active">
-                <a class="fs-1 uk-margin-small-left uk-margin-small-right" routerLink="/dashboard">
-
+                <a class="fs-1 uk-margin-small-left uk-margin-small-right" routerLink="/projects">
                     <span class="uk-margin-small-right" uk-icon="icon: home"></span> Dashboard
-                    <span class="uk-float-right" uk-icon="icon: chevron-down"></span>
                 </a>
 
-                <ul class="uk-nav-sub">
+                <ul *ngIf="userRole === 'Super Admin'" class="uk-nav-sub">
                     <li class="uk-margin-left">
                         <a routerLinkActive="active" class="fs-1 uk-margin-small-left uk-margin-small-right" routerLink="/projects">
                             <span class="uk-margin-small-right material-icons uk-text-middle">domain</span> Projects
@@ -33,6 +31,13 @@
                 </ul>
             </li>
 
+            <!-- Settings -->
+            <li *ngIf="userRole === 'Super Admin'" class="uk-text-left uk-margin-top" routerLinkActive="uk-active">
+                <a class="fs-1 uk-margin-small-left uk-margin-small-right" routerLink="/settings">
+                    <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Projects Settings
+                </a>
+            </li>
+
             <!-- Profile -->
             <li class="uk-text-left uk-margin-top" routerLinkActive="uk-active">
                 <a class="fs-1 uk-margin-small-left uk-margin-small-right" routerLink="/profile">
@@ -41,7 +46,7 @@
             </li>
 
             <!-- History -->
-            <li class="uk-text-left uk-margin-top" routerLinkActive="uk-active">
+            <li *ngIf="userRole === 'Super Admin'" class="uk-text-left uk-margin-top" routerLinkActive="uk-active">
                 <a class="fs-1 uk-margin-small-left uk-margin-small-right" routerLink="/history">
                     <span class="uk-margin-small-right" uk-icon="icon: history"></span> Users History
                 </a>

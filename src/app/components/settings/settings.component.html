@@ -1,0 +1,178 @@
+<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    <div class="uk-width-1-1">
+        <app-navbar></app-navbar>
+    </div>
+
+    <div class="uk-width-1-5 uk-visible@l" style="max-width: 240px !important;">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="uk-width-expand" style="min-height: calc(100vh - 70px);">
+
+        <div class="uk-container">
+
+            <!-- Tab navigation  -->
+            <ul id="tab-nav" uk-tab>
+                <li class="uk-active">
+                    <a href="#categoriesList">Categories List</a>
+                </li>
+                <li>
+                    <a href="#addCategory">Add Category</a>
+                </li>
+            </ul>
+
+            <div id="content" class="uk-switcher">
+
+                <!-- Categories List -->
+                <div id="categoriesList" class="uk-section">
+                    <h2>List of expense categories</h2>
+
+                    <!-- Table of categories  -->
+                    <div class="uk-card uk-card-default uk-padding border-radius-20" style=" padding: 15px 25px">
+
+                        <!-- fetching categories... -->
+                        <h3 *ngIf="loading" class="uk-text-center" style="margin: 20px;">Fetching Categories <span class="uk-margin-left" uk-spinner></span></h3>
+
+                        <!-- deleting categories... -->
+                        <h3 *ngIf="deleteProcessLoading" class="uk-text-center" style="margin: 20px;">Deleting Category
+                            <span class="uk-margin-left" uk-spinner></span></h3>
+
+                        <!-- No categories found Error  -->
+                        <h3 *ngIf="!loading && categories.length === 0" class="uk-text-center" style="margin: 20px;">
+                            There are no Categories in the system ...</h3>
+
+                        <!-- Categories  -->
+                        <table *ngIf="!loading && categories.length !== 0" class="uk-table uk-table-divider uk-text-nowrap table-hover">
+                            <thead>
+                                <tr class="uk-text-center">
+                                    <th>Category Name</th>
+                                    <th>Type</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr class="uk-box-shadow-hover-medium" *ngFor="let category of categories">
+
+                                    <td class="uk-text-middle" style="cursor: pointer;">
+                                        <!-- <a class="uk-toggle" href="#detailsModal{{category.id}}"></a> -->
+                                        <a class="" href="#detailsModal{{category.id}}" uk-toggle>{{category.name}}</a>
+                                    </td>
+
+                                    <td>{{category.type}}</td>
+
+                                    <td>
+                                        <a routerLink="/category/edit/{{category.id}}" class="uk-icon-button uk-margin-small-right text-primary" uk-icon="pencil"></a>
+                                        <a (click)="onDelete(category.id)" class="uk-icon-button text-danger" uk-icon="trash"></a>
+                                    </td>
+
+                                    <!-- Modal -->
+                                    <div id="detailsModal{{category.id}}" class="uk-flex-top" uk-modal>
+                                        <div class="uk-modal-dialog uk-margin-auto-vertical">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+
+                                            <div class="uk-modal-header">
+                                                <h2 class="uk-modal-title">{{category.name}}
+                                                    <span class="uk-text-muted" style="font-size: 17px; font-weight: 500;">{{category.type}}</span>
+                                                </h2>
+                                            </div>
+
+                                            <div class="uk-modal-body">
+                                                {{category.description === '' ? 'There is no description!!' : category.description}}
+                                            </div>
+
+                                            <div class="uk-modal-footer uk-text-right">
+
+                                                <button (click)="onDelete(category.id)" class="uk-button uk-button-danger uk-text-bold uk-border-pill uk-margin-right uk-modal-close">
+                                                    <span class="uk-margin-small-right" uk-icon="trash"></span> delete
+                                                </button>
+
+                                                <button class="uk-button uk-button-secondary uk-text-bold uk-border-pill uk-modal-close" routerLink="/category/edit/{{category.id}}">
+                                                    <span class="uk-margin-small-right" uk-icon="pencil"></span> Edit
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- Add Category form -->
+                <div id="addCategory" class="uk-section">
+                    <h2>Add Category</h2>
+
+                    <form (ngSubmit)="onAddCategory(addCategoryform)" #addCategoryform="ngForm" class="uk-form-stacked uk-card uk-card-default uk-padding border-radius-20" style="font-weight: normal;">
+
+                        <fieldset class="uk-fieldset">
+
+                            <!-- Category name field  -->
+                            <div class="uk-margin">
+                                <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                                    Category Name
+                                    <span class="uk-text-danger">*</span>
+                                </label>
+                                <div class="uk-form-controls">
+                                    <input class="uk-input border-radius-10" [class.uk-form-danger]="categoryName.invalid && categoryName.touched" type="text" placeholder="Category name" name="name" [(ngModel)]="currentCategory.name" #categoryName="ngModel" required minlength="3">
+                                </div>
+
+                                <!-- Validation errors -->
+                                <div *ngIf="categoryName.errors && categoryName.touched">
+                                    <p [hidden]="!categoryName.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Category name required.</p>
+                                    <p [hidden]="!categoryName.errors?.minlength" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Must be more at least 3 caracters.</p>
+                                </div>
+                            </div>
+
+                            <!-- Type field  -->
+                            <div class="uk-margin">
+                                <label class="uk-form-label uk-text-bold" for="form-stacked-text">
+                                    Category Type <span class="uk-text-danger">*</span>
+                                </label>
+
+                                <div class="uk-form-controls">
+                                    <select class="uk-select border-radius-10" [class.uk-form-danger]="categoryType.invalid && categoryType.touched" [(ngModel)]="currentCategory.type" name="type" #categoryType="ngModel" required>
+
+                                        <option value="" selected disabled>Select type</option>
+                                        <option value="costPerUnit">Cost per unit</option>
+                                        <option value="fixedCost">Fixed cost</option>
+
+                                    </select>
+                                </div>
+
+                                <!-- Validation errors -->
+                                <div *ngIf="categoryType.errors && categoryType.touched">
+                                    <p [hidden]="!categoryType.errors?.required" class="uk-text-danger" style="margin-top: 6px;font-size: .9rem;">Category type required.</p>
+                                </div>
+                            </div>
+
+                            <!-- Description  -->
+                            <div class="uk-margin">
+                                <label class="uk-form-label uk-text-bold" for="form-stacked-text">Category
+                                    Description</label>
+                                <div class="uk-form-controls">
+                                    <textarea class="uk-textarea border-radius-10" rows="4" placeholder="Description..." name="description" [(ngModel)]="currentCategory.description"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Submit  -->
+                            <div *ngIf="addProcessLoading" class="uk-margin">
+                                <button class="uk-button uk-button-primary uk-width-1-1 uk-text-bold uk-border-pill" type="submit" uk-spinner="ratio: 0.9"></button>
+                            </div>
+                            <div *ngIf="!addProcessLoading" class="uk-margin">
+                                <button class="uk-button uk-button-primary uk-width-1-1 uk-text-bold uk-border-pill" type="submit">Add Category</button>
+                            </div>
+
+                        </fieldset>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

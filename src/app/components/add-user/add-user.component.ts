@@ -62,7 +62,7 @@ export class AddUserComponent implements OnInit {
 
                         addUserform.form.markAsUntouched();
                     }
-                });
+                }, err => console.log(err));
 
         } else {
             // Error form invalid
